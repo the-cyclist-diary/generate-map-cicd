@@ -45,6 +45,10 @@
             <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.ibethus.gpxtomap</groupId>
+            <artifactId>gpx-to-map</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
