@@ -1,0 +1,12 @@
+name: 'The cyclist diary - image map generator'
+description: 'Generate image maps from GPX files during CI/CD build.'
+inputs:
+  map-folder:
+    description: 'The folder where GPX files can be found'
+    required: true
+    default: 'content/'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.map-folder }}
