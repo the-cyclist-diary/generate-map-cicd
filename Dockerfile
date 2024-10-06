@@ -1,8 +1,12 @@
-# Container image that runs your code
-FROM alpine:3.10
+FROM maven:3.9 AS maven_build
 
-# Copies your code file from your action repository to the filesystem path `/` of the container
-COPY entrypoint.sh /entrypoint.sh
+COPY ./ ./
+
+RUN mvn clean package
+
+FROM eclipse-temurin:21-alpine
+
+COPY --from=maven_build target/map-generator.jar /
 
 # Code file to execute when the docker container starts up (`entrypoint.sh`)
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["java", "-jar", "/map-generator.jar"]

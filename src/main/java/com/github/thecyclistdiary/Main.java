@@ -1,10 +1,15 @@
 package com.github.thecyclistdiary;
 
 
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +19,7 @@ import java.util.Set;
 public class Main {
     public static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, GitAPIException {
         if (args.length != 4) {
             throw new IllegalArgumentException("""
                     Program args should be exactly the following :
@@ -25,22 +30,29 @@ public class Main {
                     """);
         }
         String executionFolder = args[0];
-        String gitPath = args[1];
+        String repositoryUrl = args[1];
         String userName = args[2];
         String userToken = args[3];
-        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Path basePath = Paths.get(executionFolder);
-        Path gitRepoPath = Path.of(gitPath);
-        Set<String> modifiedGpxFiles = GitHelper.getModifiedGpxList(repositoryBuilder, gitRepoPath);
-        var gpxToMapWalker = new GitAwareGpxToMapWalker(modifiedGpxFiles);
-        LOGGER.info("Starting analysis of content folder {}", executionFolder);
-        Files.walkFileTree(basePath, gpxToMapWalker);
-        LOGGER.info("Done analysis of content folder");
-        if (gpxToMapWalker.getExtractedResults().findAny().isPresent()){
-            LOGGER.info("Commiting to git repository...");
-            GitHelper.commitChanges(gitRepoPath, userName, userToken);
+        Path repoDirectory = Files.createTempDirectory("git");
+
+        CloneCommand cloneCommand = Git.cloneRepository()
+                .setCredentialsProvider(new UsernamePasswordCredentialsProvider(userName, userToken))
+                .setDirectory(repoDirectory.toFile())
+                .setURI(repositoryUrl);
+        try (Git git = cloneCommand.call()) {
+            Repository repository = git.getRepository();
+            Set<String> modifiedGpxFiles = GitHelper.getModifiedGpxList(git, repository);
+            var gpxToMapWalker = new GitAwareGpxToMapWalker(modifiedGpxFiles);
+            Path completeExecutionFolder = repoDirectory.resolve(executionFolder);
+            LOGGER.info("Starting analysis of content folder {}", completeExecutionFolder);
+            Files.walkFileTree(completeExecutionFolder, gpxToMapWalker);
+            LOGGER.info("Done analysis of content folder");
+            if (gpxToMapWalker.getExtractedResults().findAny().isPresent()) {
+                LOGGER.info("Commiting to git repository...");
+                GitHelper.commitChanges(git, userName, userToken);
+            }
+            LOGGER.info("Closing program");
         }
-        LOGGER.info("Closing program");
     }
 
 }

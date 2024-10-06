@@ -1,12 +1,26 @@
 name: 'The cyclist diary - image map generator'
 description: 'Generate image maps from GPX files during CI/CD build.'
 inputs:
-  map-folder:
-    description: 'The folder where GPX files can be found'
+  content-path:
+    description: 'The folder where your GPX files can be found'
     required: true
     default: 'content/'
+  git-path:
+    description: 'The remote address of the repository'
+    required: true
+    default: ${{ github.server_url }}/${{ github.repository }}.git
+  username:
+    description: 'Your github username'
+    required: true
+    default: ${{github.repository_owner}}
+  user-token:
+    description: 'Your connection token to github'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.map-folder }}
+    - ${{ inputs.git-path }}
+    - ${{ inputs.username }}
+    - ${{ inputs.user-token }}
