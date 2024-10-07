@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Set;
 
 public class Main {
@@ -21,13 +22,15 @@ public class Main {
 
     public static void main(String[] args) throws IOException, GitAPIException {
         if (args.length != 4) {
-            throw new IllegalArgumentException("""
+            throw new IllegalArgumentException(String.format("""
                     Program args should be exactly the following :
                     - content folder (where your gow files are located
                     - git directory
                     - your GitHub username
                     - your GitHub authentication token
-                    """);
+
+                    Found : %s
+                    """, List.of(args)));
         }
         String executionFolder = args[0];
         String repositoryUrl = args[1];
