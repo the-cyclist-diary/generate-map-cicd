@@ -20,7 +20,7 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - ${{ inputs.map-folder }}
+    - ${{ inputs.content-path }}
     - ${{ inputs.git-path }}
     - ${{ inputs.username }}
     - ${{ inputs.user-token }}
