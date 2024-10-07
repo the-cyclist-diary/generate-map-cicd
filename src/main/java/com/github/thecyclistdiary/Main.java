@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Main {
-    public static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    public static final java.util.logging.Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException, GitAPIException {
         if (args.length != 4) {
@@ -31,7 +31,7 @@ public class Main {
 
                     Found : %s
                     """, List.of(args)));
-        }
+        }        
         String executionFolder = args[0];
         String repositoryUrl = args[1];
         String userName = args[2];
