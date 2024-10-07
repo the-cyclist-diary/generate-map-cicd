@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Main {
-    public static final java.util.logging.Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws IOException, GitAPIException {
         if (args.length != 4) {
