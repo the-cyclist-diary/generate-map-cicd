@@ -3,15 +3,15 @@ description: 'Generate image maps from GPX files during CI/CD build.'
 inputs:
   content-path:
     description: 'The folder where your GPX files can be found'
-    required: true
+    required: false
     default: 'content/'
   git-path:
     description: 'The remote address of the repository'
-    required: true
+    required: false
     default: ${{ github.server_url }}/${{ github.repository }}.git
   username:
     description: 'Your github username'
-    required: true
+    required: false
     default: ${{github.repository_owner}}
   user-token:
     description: 'Your connection token to github'
