@@ -18,7 +18,7 @@ inputs:
     required: true
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'ghcr.io/the-cyclist-diary/generate-map-cicd@v1.0.0'
   args:
     - ${{ inputs.content-path }}
     - ${{ inputs.git-path }}
