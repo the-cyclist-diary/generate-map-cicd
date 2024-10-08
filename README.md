@@ -3,15 +3,15 @@ Building image from map ; CI/CD step.
 
 ## Usage
 ```yml
-name: Map image generator test
+name: IMage from GPX generator
 run-name: ${{ github.actor }} started map image generation 🚀
-on: [push, workflow_dispatch]
+on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Generate images from GPX files:
     runs-on: ubuntu-latest
     steps:
-      - name: The cyclist diary - image map generator
-        uses: the-cyclist-diary/generate-map-cicd@main
+      - name: Generate images
+        uses: the-cyclist-diary/generate-map-cicd@v1.2.1
         with:
           content-path: "./"
           user-token: ${{ secrets.GITHUB_TOKEN }}
