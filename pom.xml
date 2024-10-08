@@ -24,7 +24,7 @@
         <dependency>
             <groupId>io.github.ibethus.gpxtomap</groupId>
             <artifactId>gpx-to-map</artifactId>
-            <version>1.2.4</version>
+            <version>1.2.5</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
