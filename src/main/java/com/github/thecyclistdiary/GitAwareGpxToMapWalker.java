@@ -18,8 +18,8 @@ public class GitAwareGpxToMapWalker extends GpxToMapWalker<DefaultGpxRunner, Fil
 
     private final Set<String> modifiedGpxFiles;
 
-    public GitAwareGpxToMapWalker(Set<String> modifiedGpxFiles) {
-        super(null, new DefaultGpxRunner(new DefaultGpxMapper.builder().build()), new MarkdownRunner(), true);
+    public GitAwareGpxToMapWalker(Set<String> modifiedGpxFiles, DefaultGpxMapper gpxMapper) {
+        super(null, new DefaultGpxRunner(gpxMapper), new MarkdownRunner(), true);
         this.modifiedGpxFiles = modifiedGpxFiles;
     }
 

@@ -1,6 +1,8 @@
 package com.github.thecyclistdiary;
 
 
+import map.gpx.DefaultGpxMapper;
+import map.gpx.GpxStyler;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -9,11 +11,9 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Set;
 
@@ -28,10 +28,10 @@ public class Main {
                     - git directory
                     - your GitHub username
                     - your GitHub authentication token
-
+                    
                     Found : %s
                     """, List.of(args)));
-        }        
+        }
         String executionFolder = args[0];
         String repositoryUrl = args[1];
         String userName = args[2];
@@ -45,7 +45,16 @@ public class Main {
         try (Git git = cloneCommand.call()) {
             Repository repository = git.getRepository();
             Set<String> modifiedGpxFiles = GitHelper.getModifiedGpxList(git, repository);
-            var gpxToMapWalker = new GitAwareGpxToMapWalker(modifiedGpxFiles);
+            GpxStyler gpxStyler = new GpxStyler.builder()
+                    .withGraphChartPadding(10)
+                    .build();
+            DefaultGpxMapper gpxMapper = new DefaultGpxMapper.builder()
+                    .withHeight(800)
+                    .withWidth(1200)
+                    .withChartHeight(100)
+                    .withGpxStyler(gpxStyler)
+                    .build();
+            var gpxToMapWalker = new GitAwareGpxToMapWalker(modifiedGpxFiles, gpxMapper);
             Path completeExecutionFolder = repoDirectory.resolve(executionFolder);
             LOGGER.info("Starting analysis of content folder {}", completeExecutionFolder);
             Files.walkFileTree(completeExecutionFolder, gpxToMapWalker);
